@@ -1,6 +1,5 @@
 # 🗄️ Django-Mongo
 Proyecto académico para el práctico de Bases de Datos (Ingeniería en Sistemas, UTN FRVM).
-Basado en el trabajo del profe fábrica de pastas
 Esta versión utiliza Django con MongoDB como base de datos, todo orquestado con Docker.
 
 # 🚀 Puesta en marcha 
@@ -119,3 +118,12 @@ docker compose run --rm manage migrate_to_mongo
 
 ✅ ¡Listo! Ahora tus datos y modelos están migrados a MongoDB. Puedes acceder al panel de administración en http://localhost:8000/admin usando las credenciales creadas en el paso anterior.
 
+---
+## 🤝 Créditos y Licencia
+
+- Mantenido por: Grupo 12
+- Basado en el repositorio: [fábrica de pastas](https://github.com/pindutn/fabrica_pastas/tree/main)
+
+> El código se entrega "tal cual", sin garantías. Si te es útil, considera dar feedback.
+
+---
