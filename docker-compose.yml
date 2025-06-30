@@ -1,16 +1,38 @@
-services:
+version: '3.8' # Es una buena práctica incluir la versión
+
+services: # Esta es la ÚNICA vez que debe aparecer "services:" en este nivel
+  db:
+    image: postgres:alpine
+    env_file:
+      - .env.db
+    environment:
+      - POSTGRES_INITDB_ARGS=--auth-host=md5 --auth-local=trust
+      - POSTGRES_DB=VentaEntrada # <-- Asegúrate de que esta línea esté aquí
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 2s
+      retries: 5
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - net
+    ports:
+      - "5432:5432"
+
   mongo:
-    image: mongo
-    restart: always
+    image: mongo:latest
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+      - MONGO_INITDB_DATABASE=mongo
+    volumes:
+      - mongo-data:/data/db
     ports:
       - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    networks:
+      - net
 
   backend:
     build: .
@@ -25,7 +47,7 @@ services:
     volumes:
       - ./src:/code
     depends_on:
-      mongo:
+      db:
         condition: service_healthy
     networks:
       - net
@@ -37,7 +59,7 @@ services:
     env_file:
       - .env.db
     depends_on:
-      mongo:
+      db:
         condition: service_healthy
     volumes:
       - .:/code
@@ -52,13 +74,14 @@ services:
     volumes:
       - ./src:/code
     depends_on:
-      mongo:
+      db:
         condition: service_healthy
     networks:
       - net
 
 networks:
-  net:
+  net: {} # Se recomienda poner un diccionario vacío para la red por defecto, o definirla explícitamente
 
 volumes:
-  mongo_data:
+  postgres-db:
+  mongo-data:
